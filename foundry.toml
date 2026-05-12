@@ -1,0 +1,16 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["node_modules"]
+via_ir = true
+optimizer = true
+optimizer_runs = 200
+solc_version = "0.8.24"
+
+[rpc_endpoints]
+# Archive-state-capable RPC for forking blocks around Mar 23 2022 (14442834-14442840).
+# blastapi.io confirmed archive-capable at this depth (verified via
+# `cast call WETH.balanceOf(bridge) --block 14442834` returning 173612e18).
+# publicnode.com is NOT archive at this depth ("historical state not available");
+# drpc.org free tier 408s on storage lookups.
+mainnet = "https://eth-mainnet.public.blastapi.io"

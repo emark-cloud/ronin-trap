@@ -1,0 +1,11 @@
+{
+  "name": "ronin-bridge-trap",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std#v1.8.1"
+  },
+  "dependencies": {
+    "drosera-contracts": "https://github.com/drosera-network/contracts"
+  }
+}

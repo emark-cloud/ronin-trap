@@ -1,0 +1,15 @@
+ethereum_rpc = "https://eth.drpc.org"
+drosera_rpc  = "https://relay.ethereum.drosera.io/"
+eth_chain_id = 1
+drosera_address = "0x01C344b8406c3237a6b9dbd06ef2832142866d87"
+
+[traps.ronin_bridge_trap]
+path = "out/RoninBridgeTrap.sol/RoninBridgeTrap.json"
+response_contract = "0x0000000000000000000000000000000000000000"  # set to deployed BridgePauseResponder
+response_function = "handleIncident(bytes)"
+block_sample_size = 10
+cooldown_period_blocks = 20
+min_number_of_operators = 3
+max_number_of_operators = 7
+private_trap = true
+whitelist = []
