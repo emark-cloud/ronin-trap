@@ -236,6 +236,14 @@ contract RoninBridgeTrap is Trap {
         }
 
         // VECTOR 1 — MonitoringDegraded (debounced 2 samples).
+        //   EXPLOIT: An attacker who can disrupt the trap's read path (RPC
+        //            degradation, feeder removal, malicious event-log
+        //            tampering) silently disables detection — a precursor to
+        //            many sophisticated attacks.
+        //   DETECTION: Any `xxxReadOk = false` across two consecutive
+        //              samples surfaces as MonitoringDegraded. Two-sample
+        //              debounce per GUIDELINES.md §7 prevents single-block
+        //              RPC blips from auto-pausing the protocol.
         if (_degraded(current) && _degraded(previous)) {
             return _emit(
                 ThreatType.MonitoringDegraded,
@@ -285,6 +293,15 @@ contract RoninBridgeTrap is Trap {
         }
 
         // VECTOR 3 — BridgeTVLDrain (block-over-block aggregate diff).
+        //   EXPLOIT: At block 14442835 the bridge's WETH balance collapsed
+        //            by 173,600 WETH in a single block — a ~50% drop in
+        //            aggregate bridge value. Any future drain that
+        //            sidesteps the OutlierWithdrawal event path (e.g.
+        //            an attack that doesn't emit TokenWithdrew) still
+        //            shows up as a balance state change here.
+        //   DETECTION: Compare aggregate value (WETH-equivalent units)
+        //              current vs previous; fire when drop exceeds the
+        //              governance-attested basis-point threshold.
         //   Gated on previous.balancesReadOk so a recovering RPC after a
         //   degraded window cannot look like a drain (GUIDELINES.md §4).
         if (
@@ -312,10 +329,17 @@ contract RoninBridgeTrap is Trap {
         }
 
         // VECTOR 4 — CumulativeWithdrawal (window aggregation).
-        //   Sum the per-block withdrawal deltas across the entire sample
-        //   window and compare against governance-attested caps. Each
-        //   snapshot's `windowCap*` is the same value (it's governance
-        //   policy), so we read it from `current`.
+        //   EXPLOIT: Tx 1 (173,600 WETH, block 14442835) + Tx 2 (25.5M USDC,
+        //            block 14442840) → cumulative outflow over the 10-block
+        //            window is orders of magnitude beyond the V2-audited
+        //            $50M-daily cap pro-rated to a 10-block window
+        //            (~69k USDC equivalent). Drosera consensus on tx 1
+        //            would have paused the bridge 5 blocks before tx 2.
+        //   DETECTION: Sum `blockWithdrawalSum*` across all samples,
+        //              compare to the per-token window caps embedded from
+        //              the governance feeder. Each snapshot carries the
+        //              same `windowCap*` (governance policy), so we read
+        //              from `current`.
         if (current.baselineConfigured) {
             uint256 sumW = current.blockWithdrawalSumWeth;
             uint256 sumU = current.blockWithdrawalSumUsdc;

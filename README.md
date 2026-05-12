@@ -160,6 +160,27 @@ Archive RPC: `https://eth-mainnet.public.blastapi.io` (verified to hold state fo
 
 5 blocks separated tx 1 from tx 2 — a 60-second window at 12s blocks. With `block_sample_size = 10`, Drosera operators would have run `collect()` immediately following tx 1, the trap's `OutlierWithdrawal` vector would have fired on the first sample, and 2/3 BLS consensus could have submitted a pause transaction multiple blocks before tx 2. The $25.5M USDC drain would have been contained.
 
+## Assumptions
+
+The trap is correct only when these hold:
+
+- **`BaselineFeeder` is reachable and configured.** `OutlierWithdrawal` and `CumulativeWithdrawal` are absolute-threshold vectors gated on `baselineConfigured == true`. Without governance opt-in, only `BridgeTVLDrain` and `MonitoringDegraded` are active.
+- **Governance rotates `wethPerUsdc` as WETH price moves.** The aggregate value math uses a Q18 fixed-point ratio stored in the feeder. A stale ratio doesn't break the trap, but `BridgeTVLDrain` will compute drop-bps in units that no longer match real USD value.
+- **A pre-deployed pause proxy holds the bridge role.** The shipped `BridgePauseResponder` cannot directly call `pause()` on the Ronin V1 MainchainGateway — Drosera has no role on it. In production, governance deploys an emergency-pause proxy with `WITHDRAWAL_UNLOCKER_ROLE` (or the bridge-specific equivalent) and adds its address to `BridgePauseRegistry`.
+- **Privileged roles are governance-managed.** The source is governance-*compatible* (admin/owner/relayer fields exist on all three peripheral contracts). The deployment makes it governance-*managed* by placing those roles behind a multisig + timelock.
+- **The Drosera operator network surfaces in-block event logs to `collect()` via `getEventLogs()`.** Event-log read failures fold into `MonitoringDegraded` (debounced); a sustained event-stream outage would defeat `OutlierWithdrawal` specifically until visibility recovers.
+
+## Limitations
+
+What this trap does **not** protect against:
+
+- **Validator key custody** and off-chain compromise of operator infrastructure (Ronin's actual root cause). Drosera observes on-chain results, not key management or social engineering.
+- **Forged signatures that fall under all detection thresholds.** A patient attacker could siphon below `OutlierWithdrawal`, below the window cap, and below `tvlDropBps` per block. Governance must size thresholds against the bridge's normal-traffic envelope, not theoretical maximums.
+- **Tokens beyond WETH and USDC.** The trap scopes to the two assets that comprised the historical exploit (and are the largest bridge balances). The bridge also holds AXS, SLP, and other ERC-20s — the event-scanner ignores them, and the aggregate-value math only sums WETH + USDC. Add `BridgePolicy` entries per additional token to extend coverage.
+- **USDC-only drains while `wethPerUsdc == 0`.** The aggregate-value fallback when no price ratio is set sums WETH (18 dec) + USDC (6 dec) raw, which makes USDC contribution dimensionally negligible. `BridgeTVLDrain` would miss a pure USDC drain in that mode; the other three vectors still cover it. Governance is expected to set `wethPerUsdc > 0` on first policy write.
+- **In-flight transactions in the same block as the trigger.** Drosera responds at the *next* block after consensus, not atomically with the offending tx. The protective claim is "would have caught tx 2 5 blocks later," not "would have prevented tx 1 itself."
+- **Bridges other than MainchainGateway V1.** The trap is bound at compile time to one bridge address. The `BridgePolicy` schema is per-bridge so the pattern templates across other bridges, but each deployment monitors exactly one target.
+
 ## Documentation
 
 - `LESSONS.md` — Flytrap strategy scorecard, design rationale (BaselineFeeder, token-unit thresholds, severity ordering, etc.).

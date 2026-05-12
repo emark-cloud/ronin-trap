@@ -5,7 +5,10 @@ drosera_address = "0x01C344b8406c3237a6b9dbd06ef2832142866d87"
 
 [traps.ronin_bridge_trap]
 path = "out/RoninBridgeTrap.sol/RoninBridgeTrap.json"
-response_contract = "0x0000000000000000000000000000000000000000"  # set to deployed BridgePauseResponder
+# DEPLOYMENT PLACEHOLDER — replace with the deployed BridgePauseResponder
+# address before running `drosera dryrun` or activating on mainnet. The
+# zero-address fails on first relayer dispatch by design.
+response_contract = "0x0000000000000000000000000000000000000000"
 response_function = "handleIncident(bytes)"
 block_sample_size = 10
 cooldown_period_blocks = 20

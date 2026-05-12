@@ -326,12 +326,18 @@ contract RoninBridgeTrapTest is Test {
     function test_OutlierWithdrawal_SkippedWhenBaselineUnconfigured() public view {
         bytes[] memory data = _healthyWindow(100, 200_000e18, 50_000_000e6);
         SnapInputs memory s = _baseHealthy(100, 200_000e18, 50_000_000e6);
+        // Critical: keep the threshold non-zero so we exercise the OUTER
+        // `baselineConfigured` gate, not the inner `threshold > 0` gate.
+        // Setting both to zero would mask the actual semantics being tested.
         s.baselineConfigured = false;
-        s.outlierThresholdWeth = 0;
-        s.largestWithdrawalWeth = 999_999e18;
+        s.outlierThresholdWeth = OUTLIER_WETH;
+        s.largestWithdrawalWeth = 999_999e18; // would be a clear outlier
+        // Cumulative would also fire on this large sum — disable to isolate.
+        s.windowCapWeth = 0;
+        s.windowCapUsdc = 0;
         data[0] = _encode(s);
         (bool fired,) = trap.shouldRespond(data);
-        assertFalse(fired);
+        assertFalse(fired, "must skip Outlier when baseline is not configured");
     }
 
     function test_OutlierWithdrawal_SkippedWhenEventReadFailed() public view {
