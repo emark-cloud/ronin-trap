@@ -23,7 +23,7 @@ On March 23, 2022, the Ronin Network bridge was drained of **$625M** in WETH and
 
 ### Stolen Assets
 
-173,600 WETH (~$400M) · 25.5M USDC (~$225M)
+173,600 WETH (≈ $400M) · 25.5M USDC (≈ $225M)
 
 ### Key Addresses
 
@@ -36,7 +36,7 @@ On March 23, 2022, the Ronin Network bridge was drained of **$625M** in WETH and
 
 ## Why Drosera
 
-The Verichains audit of Ronin Bridge V2 (June 28, 2022 — `/home/emark/drosera/Ronin.pdf`) explicitly recommended:
+The Verichains audit of Ronin Bridge V2 (June 28, 2022) explicitly recommended:
 
 > *"The current risk controls focus on delaying attackers (by hard cap) but unclear how to react against them. The incident response protocols should be implemented by smart contracts which help quickly respond and limit loss."*
 
@@ -193,4 +193,4 @@ What this trap does **not** protect against:
 - [Halborn: Explained — The Ronin Hack (March 2022)](https://www.halborn.com/blog/post/explained-the-ronin-hack-march-2022)
 - [Ronin official postmortem — "Back to Building"](https://roninchain.com/blog/posts/back-to-building-ronin-security-breach-6513cc78a5edc1001b03c364)
 - [Three Sigma: Ronin Bridge $625M Exploit Analysis](https://threesigma.xyz/blog/exploit/ronin-network-12m-exploit-analysis)
-- Verichains Security Audit of Ronin Bridge Smart Contracts (June 28, 2022) — `/home/emark/drosera/Ronin.pdf`
+- Verichains Security Audit of Ronin Bridge Smart Contracts (June 28, 2022)
