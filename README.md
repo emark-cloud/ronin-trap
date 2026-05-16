@@ -181,11 +181,6 @@ What this trap does **not** protect against:
 - **In-flight transactions in the same block as the trigger.** Drosera responds at the *next* block after consensus, not atomically with the offending tx. The protective claim is "would have caught tx 2 5 blocks later," not "would have prevented tx 1 itself."
 - **Bridges other than MainchainGateway V1.** The trap is bound at compile time to one bridge address. The `BridgePolicy` schema is per-bridge so the pattern templates across other bridges, but each deployment monitors exactly one target.
 
-## Documentation
-
-- `LESSONS.md` — Flytrap strategy scorecard, design rationale (BaselineFeeder, token-unit thresholds, severity ordering, etc.).
-- The Solidity source carries inline "show your work" comments mapping each detection vector to the exploit step it catches.
-
 ## Sources
 
 - [SlowMist Ronin Network exploit & AML analysis](https://slowmist.medium.com/report-on-the-ronin-network-exploit-and-aml-analysis-of-stolen-funds-692b2a589a96)
