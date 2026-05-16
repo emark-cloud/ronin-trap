@@ -5,3 +5,4 @@ bun.lock
 bun.lockb
 .env
 .DS_Store
+LESSONS.md
