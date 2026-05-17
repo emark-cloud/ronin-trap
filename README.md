@@ -154,7 +154,7 @@ forge build
 forge test
 ```
 
-Archive RPC: `https://eth-mainnet.public.blastapi.io` (verified to hold state for block 14,442,834 — see `LESSONS.md` for the RPC selection rationale).
+Archive RPC: `https://eth-mainnet.public.blastapi.io` (verified to hold state for block 14,442,834).
 
 ## Response Window
 
