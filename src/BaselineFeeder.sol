@@ -9,7 +9,7 @@ pragma solidity ^0.8.24;
 /// @dev    Exists because `pure shouldRespond` cannot read contract state.
 ///         The trap reads this in `collect()` and embeds the policy values
 ///         into every Snapshot so `shouldRespond` can consume them from the
-///         sample bytes (GUIDELINES.md §5 — BaselineFeeder Pattern).
+///         sample bytes (BaselineFeeder pattern).
 ///
 ///         Rotation happens via `setBridgePolicy(...)` behind a governance
 ///         multisig + timelock. No trap redeploy is required to roll

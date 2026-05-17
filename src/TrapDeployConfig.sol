@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 /// @title TrapDeployConfig
 /// @notice Compile-time constants for the Ronin Bridge trap deployment.
-/// @dev Drosera deploys traps with NO constructor arguments (GUIDELINES.md §2).
+/// @dev Drosera deploys traps with NO constructor arguments.
 ///      All monitored addresses live here as `internal constant` and are
 ///      surfaced through `pure` accessors on the trap so call sites read like
 ///      fields. Baseline values themselves live in the BaselineFeeder so

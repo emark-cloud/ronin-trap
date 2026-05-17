@@ -15,15 +15,15 @@ On March 23, 2022, the Ronin Network bridge was drained of **$625M** in WETH and
 1. **Nov 2021**: Sky Mavis received temporary allowlist access to sign on Axie DAO's behalf for gas-free transactions during a load incident.
 2. **Dec 2021**: That delegation was no longer needed — **but the allowlist was never revoked**.
 3. **Early 2022**: An employee was spear-phished, exposing Sky Mavis infrastructure. The attacker obtained 4 Sky Mavis validator keys and used the unrevoked Axie DAO allowlist to produce the 5th signature.
-4. **Mar 23, 2022 — Block 14,442,835** (13:29 UTC): `withdrawERC20For(20000002, attacker, WETH, 173600e18, signatures)` drains **173,600 WETH** (~$400M).
-5. **Block 14,442,840** (+5 blocks, 13:31 UTC): A second `withdrawERC20For` drains **25,500,000 USDC** (~$225M).
+4. **Mar 23, 2022 — Block 14,442,835** (13:29 UTC): `withdrawERC20For(20000002, attacker, WETH, 173600e18, signatures)` drains **173,600 WETH** (~$600M).
+5. **Block 14,442,840** (+5 blocks, 13:31 UTC): A second `withdrawERC20For` drains **25,500,000 USDC** (~$25.5M).
 6. **Mar 29, 2022**: Discovered **6 days later** when a user reported a failed 5,000 ETH withdrawal.
 
 **5 blocks separate the two attack transactions** — a 60-second window during which a Drosera consensus could have triggered an emergency pause and contained the USDC drain entirely.
 
 ### Stolen Assets
 
-173,600 WETH (≈ $400M) · 25.5M USDC (≈ $225M)
+173,600 WETH (≈ $600M) · 25.5M USDC (≈ $25.5M)
 
 ### Key Addresses
 

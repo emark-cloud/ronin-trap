@@ -9,7 +9,7 @@ import {BridgePauseRegistry, IEmergencyActionTarget} from "./BridgePauseRegistry
 ///         a triggering `shouldRespond` result. The responder dedupes by
 ///         payload hash and fans out to every approved emergency-pause
 ///         target in the registry.
-/// @dev    GUIDELINES.md §9 — idempotent execution, retryable on total
+/// @dev    Idempotent execution, retryable on total
 ///         downstream failure, distinct revert reasons for misconfiguration
 ///         vs downstream brokenness.
 ///
@@ -152,8 +152,7 @@ contract BridgePauseResponder {
             }
         }
 
-        // Distinct revert reasons so operators can diagnose the failure mode
-        // (GUIDELINES.md §9).
+        // Distinct revert reasons so operators can diagnose the failure mode.
         require(attemptedCount > 0, "no approved targets");
         require(successCount > 0,   "no target paused");
 

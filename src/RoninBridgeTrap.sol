@@ -32,7 +32,7 @@ interface IBaselineFeederLike {
 ///         loss-of-visibility surface. None of them depend on validator
 ///         signature validity — the attacker held real keys.
 ///
-///         EXPLOIT MAPPING ("show your work" per GUIDELINES.md §0.2):
+///         EXPLOIT MAPPING (detection logic mapped to the attack txs):
 ///         • Block 14442835: `withdrawERC20For(20000002, attacker, WETH,
 ///           173600e18, sig)` → bridge WETH balance collapses; `TokenWithdrew`
 ///           event emits. Vectors 2 (OutlierWithdrawal) and 3 (BridgeTVLDrain)
@@ -62,7 +62,7 @@ contract RoninBridgeTrap is Trap {
     }
 
     struct Snapshot {
-        // Binding + ordering (GUIDELINES.md §3.2)
+        // Binding + ordering
         address bridge;                  //  0
         uint256 blockNumber;             //  1
         // Read-status flags (explicit, no sentinel ambiguity)
@@ -106,7 +106,7 @@ contract RoninBridgeTrap is Trap {
     uint256 internal constant BPS = 10_000;
 
     // ────────────────────────────────────────────────────────────────────────
-    // Pure config accessors (GUIDELINES.md §2 — constructorless deployment)
+    // Pure config accessors (constructorless deployment)
     // ────────────────────────────────────────────────────────────────────────
 
     function BRIDGE_GATEWAY() public pure returns (address) {
@@ -242,7 +242,7 @@ contract RoninBridgeTrap is Trap {
         //            many sophisticated attacks.
         //   DETECTION: Any `xxxReadOk = false` across two consecutive
         //              samples surfaces as MonitoringDegraded. Two-sample
-        //              debounce per GUIDELINES.md §7 prevents single-block
+        //              debounce prevents single-block
         //              RPC blips from auto-pausing the protocol.
         if (_degraded(current) && _degraded(previous)) {
             return _emit(
@@ -303,7 +303,7 @@ contract RoninBridgeTrap is Trap {
         //              current vs previous; fire when drop exceeds the
         //              governance-attested basis-point threshold.
         //   Gated on previous.balancesReadOk so a recovering RPC after a
-        //   degraded window cannot look like a drain (GUIDELINES.md §4).
+        //   degraded window cannot look like a drain.
         if (
             current.balancesReadOk &&
             previous.balancesReadOk &&
@@ -383,7 +383,7 @@ contract RoninBridgeTrap is Trap {
 
     /// @dev `_safeBalanceOf` returns an explicit ok flag so a failed read
     ///      never masquerades as a legitimate zero balance and never
-    ///      contaminates aggregate-drop checks (GUIDELINES.md §4).
+    ///      contaminates aggregate-drop checks.
     function _safeBalanceOf(address token, address account)
         internal
         view
@@ -512,7 +512,7 @@ contract RoninBridgeTrap is Trap {
 
     /// @dev `_degraded` does NOT include `baselineConfigured` because that
     ///      is a deliberate operator choice (governance hasn't opted in yet),
-    ///      not a visibility failure (GUIDELINES.md §5).
+    ///      not a visibility failure.
     function _degraded(Snapshot memory s) internal pure returns (bool) {
         return (!s.balancesReadOk || !s.baselineReadOk || !s.eventReadOk);
     }
@@ -537,7 +537,7 @@ contract RoninBridgeTrap is Trap {
         );
     }
 
-    /// @dev Malformed-bytes-safe decode (GUIDELINES.md §5). Snapshot has no
+    /// @dev Malformed-bytes-safe decode. Snapshot has no
     ///      dynamic fields so its encoding length is fixed; any other length
     ///      yields a zero snapshot rather than a revert.
     function _decodeSnapshot(bytes calldata raw)

@@ -13,8 +13,8 @@ interface IEmergencyActionTarget {
 /// @notice Governance-owned bounded allowlist of approved emergency-pause
 ///         targets. The responder fans incidents out to every approved
 ///         target up to a hard cap.
-/// @dev    Mirrors GUIDELINES.md §9 GuardianRegistry pattern, renamed for the
-///         bridge domain. Two subtleties carried over:
+/// @dev    Guardian-registry pattern, renamed for the bridge domain. Two
+///         subtleties carried over:
 ///
 ///         1. `MAX_TARGETS` bounds fan-out gas so an unbounded list cannot
 ///            become gas-fragile at the exact moment of an incident.
