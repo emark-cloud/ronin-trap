@@ -42,7 +42,7 @@ The Verichains audit of Ronin Bridge V2 (June 28, 2022) explicitly recommended:
 
 This trap is that incident-response layer, implemented three years retroactively for the V1 bridge that was drained.
 
-The wider claim — and the marketable headline of this trap — is that **Drosera does not require the trap author to predict the attack vector**. The Ronin root cause was off-chain (compromised dev infrastructure plus an unrevoked allowlist). The trap catches it anyway because **bridge state diverged from a sanctioned baseline**.
+The wider claim — and the headline of this trap — is that **Drosera does not require the trap author to predict the attack vector**. The Ronin root cause was off-chain (compromised dev infrastructure plus an unrevoked allowlist). The trap catches it anyway because **bridge state diverged from a sanctioned baseline**.
 
 ## Threat Model
 
@@ -64,7 +64,7 @@ Severity-ordered, short-circuiting on first match.
 | 3 | `BridgeTVLDrain` (block-over-block diff) | State-diff | Tx 1 → ~50% drop in aggregated bridge value. |
 | 4 | `CumulativeWithdrawal` (window aggregation) | Velocity / multi-block | Tx 1 + Tx 2 over 10-block window vastly exceeds pro-rated $50M daily cap (Ronin's own V2 audit number). |
 
-Vector 2 is the marketable headline — it uses Ronin's V2-audit Tier-3 threshold (`$10M`, `~4,000 WETH`) **enforced three years earlier** by Drosera.
+Vector 2 is the headline — it uses Ronin's V2-audit Tier-3 threshold (`$10M`, `~4,000 WETH`) **enforced three years earlier** by Drosera.
 
 ## Architecture
 
